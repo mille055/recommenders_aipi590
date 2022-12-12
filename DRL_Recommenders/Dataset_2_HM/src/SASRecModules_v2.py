@@ -1,17 +1,7 @@
-# -*- coding: utf-8 -*-
-#/usr/bin/python2
-'''
-June 2017 by kyubyong park. 
-kbpark.linguist@gmail.com.
-https://www.github.com/kyubyong/transformer
-'''
-
 from __future__ import print_function
 import tensorflow as tf
 import numpy as np
 from utility_v2 import normalize
-
-
 
 def positional_encoding(dim, sentence_length, dtype=tf.float32):
 
@@ -31,7 +21,8 @@ def embedding(inputs,
               scope="embedding", 
               with_t=False,
               reuse=None):
-    '''Embeds a given tensor.
+    '''
+    Embeds a given tensor.
 
     Args:
       inputs: A `Tensor` with type `int32` or `int64` containing the ids
@@ -48,44 +39,6 @@ def embedding(inputs,
     Returns:
       A `Tensor` with one more rank than inputs's. The last dimensionality
         should be `num_units`.
-        
-    For example,
-    
-    ```
-    import tensorflow as tf
-    
-    inputs = tf.to_int32(tf.reshape(tf.range(2*3), (2, 3)))
-    outputs = embedding(inputs, 6, 2, zero_pad=True)
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        print sess.run(outputs)
-    >>
-    [[[ 0.          0.        ]
-      [ 0.09754146  0.67385566]
-      [ 0.37864095 -0.35689294]]
-
-     [[-1.01329422 -1.09939694]
-      [ 0.7521342   0.38203377]
-      [-0.04973143 -0.06210355]]]
-    ```
-    
-    ```
-    import tensorflow as tf
-    
-    inputs = tf.to_int32(tf.reshape(tf.range(2*3), (2, 3)))
-    outputs = embedding(inputs, 6, 2, zero_pad=False)
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        print sess.run(outputs)
-    >>
-    [[[-0.19172323 -0.39159766]
-      [-0.43212751 -0.66207761]
-      [ 1.03452027 -0.26704335]]
-
-     [[-0.11634696 -0.35983452]
-      [ 0.50208133  0.53509563]
-      [ 1.22204471 -0.96587461]]]    
-    ```    
     '''
     with tf.compat.v1.variable_scope(scope, reuse=reuse):
         lookup_table = tf.compat.v1.get_variable('lookup_table',
@@ -103,7 +56,6 @@ def embedding(inputs,
     if with_t: return outputs,lookup_table
     else: return outputs
 
-
 def multihead_attention(queries,
                         keys,
                         num_units=None, 
@@ -114,7 +66,8 @@ def multihead_attention(queries,
                         scope="multihead_attention", 
                         reuse=None,
                         with_qk=False):
-    '''Applies multihead attention.
+    '''
+    Applies multihead attention.
     
     Args:
       queries: A 3d tensor with shape of [N, T_q, C_q].
@@ -128,7 +81,7 @@ def multihead_attention(queries,
       reuse: Boolean, whether to reuse the weights of a previous layer
         by the same name.
         
-    Returns
+    Returns:
       A 3d tensor with shape of (N, T_q, C)  
     '''
     with tf.compat.v1.variable_scope(scope, reuse=reuse):
@@ -204,7 +157,8 @@ def feedforward(inputs,
                 dropout_rate=0.2,
                 is_training=True,
                 reuse=None):
-    '''Point-wise feed forward net.
+    '''
+    Point-wise feed forward net.
     
     Args:
       inputs: A 3d tensor with shape of [N, T, C].
@@ -230,8 +184,5 @@ def feedforward(inputs,
         
         # Residual connection
         outputs += inputs
-        
-        # Normalize
-        #outputs = normalize(outputs)
-    
+
     return outputs
