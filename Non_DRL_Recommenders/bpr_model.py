@@ -23,7 +23,7 @@ def run_bpr_model(data, k, epochs, learning_rate, train_size=0.8):
     """
     
     ## Split dataset into training and testing 
-    train_data, test_data = python_random_split(data, train_size, SEED=0)
+    train_data, test_data = python_random_split(data, train_size, seed=0)
 
     ## Define evaluation object for train and test data
     eval_method = BaseMethod.from_splits(
