@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-'''
-Nov 2021 by XinXin. 
-xinxin@sdu.edu.cn.
-https://arxiv.org/pdf/2111.03474.pdf
-'''
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -18,50 +12,54 @@ import trfl
 from trfl import indexing_ops
 
 def parse_args():
+    '''
+        Function to parse the given command line arguments.
+    '''
     parser = argparse.ArgumentParser(description="Run nive double q learning.")
 
     parser.add_argument('--epoch', type=int, default=100,
-                        help='Number of max epochs.')
+                        help='Number of maximum epochs')
     parser.add_argument('--data', nargs='?', default='HM_data',
-                        help='data directory')
-    # parser.add_argument('--pretrain', type=int, default=1,
-    #                     help='flag for pretrain. 1: initialize from pretrain; 0: randomly initialize; -1: save the model to pretrain file')
+                        help='Data directory')
     parser.add_argument('--batch_size', type=int, default=256,
-                        help='Batch size.')
+                        help='Batch size')
     parser.add_argument('--eval_freq', type=int, default=8000,
-                        help='Evaluation frequency.')
+                        help='Evaluation frequency')
     parser.add_argument('--eval_batch_size', type=int, default=30,
-                        help='Eval batch size.')
+                        help='Evaluation batch size')
     parser.add_argument('--hidden_factor', type=int, default=64,
-                        help='Number of hidden factors, i.e., embedding size.')
+                        help='Number of hidden factors, i.e., embedding size')
     parser.add_argument('--r_click', type=float, default=1.0,
-                        help='reward for the click behavior.')
+                        help='Reward value for the click behavior')
     parser.add_argument('--r_buy', type=float, default=3.0,
-                        help='reward for the purchase behavior.')
+                        help='Reward value for the purchase behavior')
     parser.add_argument('--r_negative', type=float, default=-0.0,
-                        help='reward for the negative behavior.')
+                        help='Reward value for the negative behavior')
     parser.add_argument('--lr', type=float, default=0.01,
-                        help='Learning rate.')
+                        help='Learning rate')
     parser.add_argument('--discount', type=float, default=0.2,
-                        help='Discount factor for RL.')
+                        help='Discount factor for RL')
     parser.add_argument('--neg', type=int, default=10,
-                        help='number of negative samples.')
+                        help='Number of negative samples')
     parser.add_argument('--weight', type=float, default=1.0,
-                        help='weight for the q-learning loss.')
+                        help='Weight for the q-learning loss')
     parser.add_argument('--model', type=str, default='GRU',
-                        help='the base recommendation models, including GRU,Caser,NItNet and SASRec')
+                        help='Select the base recommendation models, including GRU, Caser, NItNet and SASRec')
     parser.add_argument('--num_filters', type=int, default=16,
                         help='Number of filters per filter size (default: 16) (for Caser)')
     parser.add_argument('--filter_sizes', nargs='?', default='[2,3,4]',
                         help='Specify the filter_size (for Caser)')
-    parser.add_argument('--num_heads', default=1, type=int,help='number heads (for SASRec)')
-    parser.add_argument('--num_blocks', default=1, type=int, help='number heads (for SASRec)')
+    parser.add_argument('--num_heads', default=1, type=int,help='Number of heads (for SASRec)')
+    parser.add_argument('--num_blocks', default=1, type=int, help='Number of blocks (for SASRec)')
     parser.add_argument('--dropout_rate', default=0.1, type=float)
 
     return parser.parse_args()
 
 
 class QNetwork:
+    '''
+        Class defining a Q-Network along with the required functions.
+    '''
     def __init__(self, hidden_size, learning_rate, item_num, state_size, pretrain, name='DQNetwork'):
         tf.compat.v1.disable_eager_execution()
         self.state_size = state_size
@@ -73,8 +71,8 @@ class QNetwork:
         self.weight=args.weight
         self.model=args.model
         self.is_training = tf.compat.v1.placeholder(tf.bool, shape=())
-        # self.save_file = save_file
         self.name = name
+
         with tf.compat.v1.variable_scope(self.name):
             self.all_embeddings=self.initialize_embeddings()
             self.inputs = tf.compat.v1.placeholder(tf.int32, [None, state_size])  # sequence of history, [batchsize,state_size]
@@ -98,7 +96,7 @@ class QNetwork:
                 self.input_emb *= mask
                 self.embedded_chars_expanded = tf.expand_dims(self.input_emb, -1)
 
-                # Create a convolution + maxpool layer for each filter size
+                # Creating a convolution + maxpool layer for each filter size
                 pooled_outputs = []
                 num_filters = args.num_filters
                 filter_sizes = eval(args.filter_sizes)
@@ -119,7 +117,7 @@ class QNetwork:
                         h = tf.nn.relu(tf.nn.bias_add(conv, b), name="relu")
                         # Maxpooling over the outputs
                         # new shape after max_pool[?, 1, 1, num_filters]
-                        # be carefyul, the  new_sequence_length has changed because of wholesession[:, 0:-1]
+                        # be careful, the  new_sequence_length has changed because of wholesession[:, 0:-1]
                         pooled = tf.nn.max_pool(
                             h,
                             ksize=[1, state_size - filter_size + 1, 1, 1],
@@ -128,11 +126,12 @@ class QNetwork:
                             name="pool")
                         pooled_outputs.append(pooled)
 
-                # Combine all the pooled features
+                # Combining all the pooled features
                 num_filters_total = num_filters * len(filter_sizes)
                 self.h_pool = tf.concat(pooled_outputs, 3)
                 self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])  # shape=[batch_size, 384]
-                # design the veritcal cnn
+                
+                # Designing the veritcal CNN
                 with tf.name_scope("conv-verical"):
                     filter_shape = [self.state_size, 1, 1, 1]
                     W = tf.Variable(tf.random.truncated_normal(filter_shape, stddev=0.1), name="W")
@@ -147,7 +146,7 @@ class QNetwork:
                 self.vcnn_flat = tf.reshape(h, [-1, self.hidden_size])
                 self.final = tf.concat([self.h_pool_flat, self.vcnn_flat], 1)  # shape=[batch_size, 384+100]
 
-                # Add dropout
+                # Adding a dropout layer
                 with tf.name_scope("dropout"):
                     self.states_hidden = tf.compat.v1.layers.dropout(self.final,
                                                           rate=args.dropout_rate,
@@ -156,7 +155,6 @@ class QNetwork:
 
                 mask = tf.expand_dims(tf.compat.v1.to_float(tf.not_equal(self.inputs, item_num)), -1)
 
-                # self.input_emb=tf.nn.embedding_lookup(all_embeddings['state_embeddings'],self.inputs)
                 self.model_para = {
                     'dilated_channels': 64,  # larger is better until 512 or 1024
                     'dilations': [1, 2, 1, 2, 1, 2, ],  # YOU should tune this hyper-parameter, refer to the paper.
@@ -184,14 +182,13 @@ class QNetwork:
                 self.seq = self.input_emb + pos_emb
 
                 mask = tf.expand_dims(tf.compat.v1.to_float(tf.not_equal(self.inputs, item_num)), -1)
-                # Dropout
+                # Dropout Layer
                 self.seq = tf.compat.v1.layers.dropout(self.seq,
                                              rate=args.dropout_rate,
                                              training=tf.convert_to_tensor(value=self.is_training))
                 self.seq *= mask
 
-                # Build blocks
-
+                # Building self-attention blocks
                 for i in range(args.num_blocks):
                     with tf.compat.v1.variable_scope("num_blocks_%d" % i):
                         # Self-attention
@@ -253,6 +250,9 @@ class QNetwork:
             self.opt = tf.compat.v1.train.AdamOptimizer(learning_rate).minimize(self.loss)
 
     def initialize_embeddings(self):
+        '''
+            Function to initialize embeddings either randomly or using a pretrained model. 
+        '''
         all_embeddings = dict()
         if self.pretrain == False:
             with tf.compat.v1.variable_scope(self.name):
@@ -262,19 +262,13 @@ class QNetwork:
                                              name='pos_embeddings')
                 all_embeddings['state_embeddings'] = state_embeddings
                 all_embeddings['pos_embeddings'] = pos_embeddings
-        # else:
-        #     weight_saver = tf.train.import_meta_graph(self.save_file + '.meta')
-        #     pretrain_graph = tf.get_default_graph()
-        #     state_embeddings = pretrain_graph.get_tensor_by_name('state_embeddings:0')
-        #     with tf.Session() as sess:
-        #         weight_saver.restore(sess, self.save_file)
-        #         se = sess.run([state_embeddings])[0]
-        #     with tf.variable_scope(self.name):
-        #         all_embeddings['state_embeddings'] = tf.Variable(se, dtype=tf.float32)
-        #     print("load!")
+
         return all_embeddings
 
 def evaluate(sess):
+    '''
+        Function to perform model evaluation based on the specified batch size by calculating the metrics such as Hit Rate (HR) and Normalized Discounted Cumulative Gain (NDCG).
+    '''
     batch = eval_batch_size
     print(f'\nStart evaluation with batch size {batch}')
 
@@ -319,6 +313,7 @@ def evaluate(sess):
         prediction=sess.run(QN_1.output1, feed_dict={QN_1.inputs: states,QN_1.len_state:len_states,QN_1.is_training:False})
         sorted_list=np.argsort(prediction)
         calculate_hit(sorted_list,topk,actions,rewards,reward_click,total_reward,hit_clicks,ndcg_clicks,hit_purchase,ndcg_purchase)
+    
     print('#############################################################')
     print('total clicks: %d, total purchase:%d' % (total_clicks, total_purchase))
     for i in range(len(topk)):
@@ -347,7 +342,6 @@ if __name__ == '__main__':
     reward_buy = args.r_buy
     reward_negative=args.r_negative
     topk=[5,10,15,20]
-    # save_file = 'pretrain-GRU/%d' % (hidden_size)
 
     tf.compat.v1.reset_default_graph()
 
@@ -357,8 +351,6 @@ if __name__ == '__main__':
                     state_size=state_size, pretrain=False)
 
     replay_buffer = pd.read_pickle(os.path.join(data_directory, 'replay_buffer.df'))
-    # saver = tf.train.Saver()
-
     
     with tf.compat.v1.Session() as sess:
         # Initialize variables
@@ -376,10 +368,9 @@ if __name__ == '__main__':
                 total_step=0
                 batch = replay_buffer.sample(n=args.batch_size).to_dict()
 
-                #state = list(batch['state'].values())
-
                 next_state = list(batch['next_state'].values())
                 len_next_state = list(batch['len_next_states'].values())
+
                 # double q learning, pointer is for selecting which network  is target and which is main
                 pointer = np.random.randint(0, 2)
                 if pointer == 0:
@@ -396,6 +387,7 @@ if __name__ == '__main__':
                                               feed_dict={mainQN.inputs: next_state,
                                                          mainQN.len_state: len_next_state,
                                                          mainQN.is_training:True})
+                
                 # Set target_Qs to 0 for states where episode ends
                 is_done = list(batch['is_done'].values())
                 for index in range(target_Qs.shape[0]):

@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-'''
-Nov 2021 by XinXin. 
-xinxin@sdu.edu.cn.
-https://arxiv.org/pdf/2111.03474.pdf
-'''
 import os
 import numpy as np
 import pandas as pd
@@ -11,10 +5,16 @@ from collections import deque
 import tensorflow as tf
 
 def to_pickled_df(data_directory, **kwargs):
+    '''
+        Function to save the dataframes in pickle format at the specified data_directory location.
+    '''
     for name, df in kwargs.items():
         df.to_pickle(os.path.join(data_directory, name + '.df'))
 
 def pad_history(itemlist,length,pad_item):
+    '''
+        Function to append history for the given item given the length of history needed and the itemlist.
+    '''
     if len(itemlist)>=length:
         return itemlist[-length:]
     if len(itemlist)<length:
@@ -22,13 +22,16 @@ def pad_history(itemlist,length,pad_item):
         itemlist.extend(temp)
         return itemlist
 
-
 def extract_axis_1(data, ind):
     """
     Get specified elements along the first axis of tensor.
-    :param data: Tensorflow tensor that will be subsetted.
-    :param ind: Indices to take (one for each element along axis 0 of data).
-    :return: Subsetted tensor.
+
+    Args:
+        param data: Tensorflow tensor that will be subsetted.
+        param ind: Indices to take (one for each element along axis 0 of data).
+    
+    Returns:
+        Subsetted tensor
     """
 
     batch_range = tf.range(tf.shape(input=data)[0])
@@ -37,23 +40,20 @@ def extract_axis_1(data, ind):
 
     return res
 
-
 def normalize(inputs,
               epsilon=1e-8,
               scope="ln",
               reuse=None):
-    '''Applies layer normalization.
+    '''
+    Applies layer normalization.
 
     Args:
-      inputs: A tensor with 2 or more dimensions, where the first dimension has
-        `batch_size`.
-      epsilon: A floating number. A very small number for preventing ZeroDivision Error.
-      scope: Optional scope for `variable_scope`.
-      reuse: Boolean, whether to reuse the weights of a previous layer
-        by the same name.
+    inputs: A tensor with 2 or more dimensions, where the first dimension has `batch_size`.
+    epsilon: A floating number. A very small number for preventing ZeroDivision Error.
+    scope: Optional scope for `variable_scope`.
+    reuse: Boolean, whether to reuse the weights of a previous layer by the same name.
 
-    Returns:
-      A tensor with the same shape and data dtype as `inputs`.
+    Returns: A tensor with the same shape and data dtype as `inputs`.
     '''
     with tf.compat.v1.variable_scope(scope, reuse=reuse):
         inputs_shape = inputs.get_shape()
@@ -68,6 +68,9 @@ def normalize(inputs,
     return outputs
 
 def calculate_hit(sorted_list,topk,true_items,rewards,r_click,total_reward,hit_click,ndcg_click,hit_purchase,ndcg_purchase):
+    '''
+        Function to calculate the hit rate(HR) and NDCG for the given session list. 
+    '''
     for i in range(len(topk)):
         rec_list = sorted_list[:, -topk[i]:]
         for j in range(len(true_items)):
@@ -81,8 +84,10 @@ def calculate_hit(sorted_list,topk,true_items,rewards,r_click,total_reward,hit_c
                     hit_purchase[i] += 1.0
                     ndcg_purchase[i] += 1.0 / np.log2(rank + 1)
 
-
 def calculate_hit_single(sorted_list,topk,true_items,hit,ndcg):
+    '''
+        Function to calculate the hit rate(HR) and NDCG for a particular session. 
+    '''
     for i in range(len(topk)):
         rec_list = sorted_list[:, -topk[i]:]
         for j in range(len(true_items)):
