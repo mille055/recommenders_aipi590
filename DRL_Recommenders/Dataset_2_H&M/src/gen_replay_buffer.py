@@ -78,7 +78,7 @@ if __name__ == '__main__':
     # Read all transaction data
     print('\nStart reading all transaction data ...')
     start_t = time.time()
-    raw_data = pd.read_csv(f"{DATA}//transactions_train.csv")
+    raw_data = pd.read_csv(f"{DATA}/transactions_train.csv")
     print(f'Finish reading in {time.strftime("%H:%M:%S", time.gmtime(time.time()-start_t))}')
     
     # convert customer_id to session_id; article_id to item_id, t_dat to timestamp

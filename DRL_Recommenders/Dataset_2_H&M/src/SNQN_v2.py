@@ -11,7 +11,7 @@ import os
 import argparse
 from collections import deque
 from utility_v2 import pad_history,calculate_hit
-from NextItNetModules import *
+from NextItNetModules_v2 import *
 from SASRecModules_v2 import *
 
 import trfl
