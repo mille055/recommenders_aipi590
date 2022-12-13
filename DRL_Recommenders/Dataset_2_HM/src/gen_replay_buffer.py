@@ -4,58 +4,56 @@ from tqdm import tqdm
 import os
 import argparse
 import numpy as np
+# Utility
 import time
 
 def parse_args():
-    '''
-        Function to parse the given command line arguments.
-    '''
+
     parser = argparse.ArgumentParser(description="Generae replay buffer data.")
 
     parser.add_argument('--data', nargs='?', default='data',
-                        help='Data Directory')
+                        help='data directory')
 
     parser.add_argument('--state_len', type=int, default=10,
-                        help='Max state length')
+                        help='Max state length.')
 
     parser.add_argument('--size', type=int, default=-1,
-                        help='Number of session ids to be used for generating train/validation/test datasets.')
+                        help='How many session id will be used to generate train/val/test id.')
 
     parser.add_argument('--random', type=bool, default=True,
-                        help='Select session id randomly or not. If True, then sess_start will be invalidated.')
+                        help='Is select session id randomly. If True, then sess_start will be invalided')
 
     parser.add_argument('--seed', type=int, default=1234,
-                        help='Value of random seed.')
+                        help='Random seed')
 
     parser.add_argument('--sess_start', type=int, default=0,
-                        help='nth value to start generating the session ids.')
+                        help='Generate from the nth session id')
 
     parser.add_argument('--format', choices=['paper', 'csv'], default='paper',
-                        help='Select output format: "paper" or "csv".')
+                        help='Output format "paper" (paper format) or "csv" (csv file)')
+
+    #parser.add_argument('--pad', choices=['item_size', '0'], default='paper',
+    #                    help='Use which mark ("item_size", "0") as pad')
+
+    #parser.add_argument('--train_split', type=float, default='0.8',
+    #                    help='Split into training and testing data')
 
     return parser.parse_args()
 
 def to_pickled_df(data_directory, **kwargs):
-    '''
-        Function to save the dataframes in pickle format at the specified data_directory location.
-    '''
     for name, df in kwargs.items():
         df.to_pickle(os.path.join(data_directory, name + '.df'))
 
+
 def generate_session_id(df):
-    '''
-        Function to generate unique session ids based on customer_id as the dataset doesn't contain session information.
-    '''
     cus_ids = df['customer_id'].unique()
     cus_to_sess = {value: index for index, value in enumerate(cus_ids)}
     df['customer_id'] = df['customer_id'].apply(lambda x: cus_to_sess[x])
     df = df.rename(columns={'customer_id': 'session_id'})
     return df
 
+
 def pad_history(itemlist, length, pad_item):
-    '''
-        Function to append history for the given item given the length of history needed and the itemlist.
-    '''
     if len(itemlist)>=length:
         return itemlist[-length:]
     if len(itemlist)<length:
@@ -63,23 +61,32 @@ def pad_history(itemlist, length, pad_item):
         itemlist.extend(temp)
         return itemlist
 
+
+###########################################################
+
+# Usage
+'''
+python src/models/gen_replay_buffer.py --size 20000 --format paper --data ../HM_data/
+python src/models/gen_replay_buffer.py --size 20000 --format csv --data ../HM_data/
+'''
+
 if __name__ == '__main__':
 
     args = parse_args()
     DATA = args.data
 
-    # Reading the transaction data
+    # Read all transaction data
     print('\nStart reading all transaction data ...')
     start_t = time.time()
     raw_data = pd.read_csv(f"{DATA}/transactions_train.csv")
     print(f'Finish reading in {time.strftime("%H:%M:%S", time.gmtime(time.time()-start_t))}')
     
-    # Converting customer_id to session_id; article_id to item_id, t_dat to timestamp
+    # convert customer_id to session_id; article_id to item_id, t_dat to timestamp
     raw_data = generate_session_id(raw_data)
     raw_data = raw_data.rename(columns={'article_id':'item_id', 't_dat':'timestamp'})
     raw_data = raw_data[raw_data['timestamp'] > '2018-12-31']
 
-    # Sampling session_ids for processing
+    # Sample session_ids for processing
     session_ids = raw_data['session_id'].unique()
     session_size = len(session_ids)
     
@@ -94,30 +101,28 @@ if __name__ == '__main__':
     else:
         sampled_session_id = session_ids[args.sess_start : target_sess_size]
 
-    # Converting original id to paper style id
+    # convert original id to paper style id
     item_ids = raw_data['item_id'].unique()
     item_size = len(item_ids)
     code_to_item = {value: index for index, value in enumerate(item_ids)}
     raw_data['item_id'] = raw_data['item_id'].apply(lambda x: code_to_item[x])
 
-    # Filtering and saving sampled_session.df/csv
+    # Filter and ave sampled_session.df/csv
     print('\nFilter and save all valid sampled data')
     sampled_sessions = raw_data[raw_data['session_id'].isin(sampled_session_id)]
 
-    # Keeping only sessions with length >= 3 <= 50
+    # only keep sessions with length >= 3 <= 50
     sampled_sessions['valid_session'] = sampled_sessions.session_id.map(sampled_sessions.groupby('session_id')['item_id'].size() > 2)
     sampled_sessions = sampled_sessions.loc[sampled_sessions.valid_session].drop('valid_session', axis=1)
     sampled_sessions['valid_session'] = sampled_sessions.session_id.map(sampled_sessions.groupby('session_id')['item_id'].size() < 50)
     sampled_sessions = sampled_sessions.loc[sampled_sessions.valid_session].drop('valid_session', axis=1)
-    
-    # Dropping unncessary cols
+    # drop unncessary cols
     print(sampled_sessions.columns)
     sampled_sessions = sampled_sessions.drop(columns=['price', 'sales_channel_id'])
     
-    # Filtering all "buy" transactions
+    # all transactions are buy
     sampled_sessions.loc[:, 'is_buy'] = 1
-
-    # Sorting by session_id and timestamp
+    # sort by session_if, timestamp
     sampled_sessions=sampled_sessions.sort_values(by=['session_id','timestamp'])
     sampled_sessions.to_csv(os.path.join(DATA, './sampled_sessions.csv'))
     to_pickled_df(DATA, sampled_sessions=sampled_sessions)
@@ -139,7 +144,7 @@ if __name__ == '__main__':
     print(f'Popularity finished in {time.strftime("%H:%M:%S", time.gmtime(time.time()-start_t))}')
 
 
-    # Split into train, val, test datasets
+    # Split into train, val, test
     print('\nStart spliting into train, val, test data ...')
     total_ids = sampled_session_id
     np.random.shuffle(total_ids)
@@ -158,7 +163,7 @@ if __name__ == '__main__':
     to_pickled_df(DATA, sampled_val=val_sessions)
     to_pickled_df(DATA,sampled_test=test_sessions)
 
-    # Set padding parameters
+    # pad params
     STATE_LEN = args.state_len
     if "paper" == args.format:
         PAD = item_size
@@ -191,6 +196,10 @@ if __name__ == '__main__':
     for id in tqdm(ids):
         group = groups.get_group(id)
         history = []
+
+        # Skip short history interaction
+        # if group.shape[1] < 3:
+        #     continue
 
         for index, row in group.iterrows():
             s = list(history)

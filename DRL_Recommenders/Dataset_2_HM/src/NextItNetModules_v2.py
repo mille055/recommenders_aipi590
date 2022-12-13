@@ -1,7 +1,14 @@
+# -*- coding: utf-8 -*-
+'''
+Nov 2021 by XinXin. 
+xinxin@sdu.edu.cn.
+https://arxiv.org/pdf/2111.03474.pdf
+'''
 import tensorflow as tf
 import math
 from utility_v2 import *
 
+# config e.g. dilations: [1,4,16,] In most cases[1,4,] is enough
 def nextitnet_residual_block(input_, dilation, layer_id,
                              residual_channels, kernel_size,
                              causal=True, train=True):
@@ -50,3 +57,31 @@ def conv1d(input_, output_channels,
             out = tf.nn.conv2d(input_expanded, weight, strides=[1, 1, 1, 1], padding="SAME") + bias
 
         return tf.squeeze(out, [1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
