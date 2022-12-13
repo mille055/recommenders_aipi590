@@ -62,9 +62,8 @@ if __name__ == '__main__':
 
     # Get unique sessions ids and shuffle order
     total_sessions = sorted_events.session_id.unique()
-    # Set random seed if specified as parameter
-    if args.random:
-        np.random.seed(args.seed)
+    # Set random seed before shuffling
+    np.random.seed(args.seed)
     np.random.shuffle(total_sessions)
 
     # Split data into train/test sets
