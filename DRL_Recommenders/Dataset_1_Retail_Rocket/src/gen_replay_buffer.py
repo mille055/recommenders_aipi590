@@ -91,8 +91,6 @@ if __name__ == '__main__':
             pop_dict[action]+=1
         else:
             pop_dict[action]=1
-        if index%100000==0:
-            print (index/100000)
     for key in pop_dict:
         pop_dict[key]=float(pop_dict[key])/float(total_actions)
     # Save popularity info to a local file
