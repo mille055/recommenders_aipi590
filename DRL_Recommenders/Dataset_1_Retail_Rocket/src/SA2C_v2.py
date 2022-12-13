@@ -12,7 +12,7 @@ import trfl
 from trfl import indexing_ops
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run nive double q learning.")
+    parser = argparse.ArgumentParser(description="Run naive double q learning.")
 
     parser.add_argument('--epoch', type=int, default=50,
                         help='Number of max epochs.')
@@ -370,6 +370,7 @@ def evaluate(sess, datatype='val'):
 
 if __name__ == '__main__':
     tf.compat.v1.disable_eager_execution()
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
     # Network parameters
     args = parse_args()
 
