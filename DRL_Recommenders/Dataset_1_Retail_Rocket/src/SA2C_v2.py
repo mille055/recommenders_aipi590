@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore")
 import tensorflow as tf
 import numpy as np
 import pandas as pd
