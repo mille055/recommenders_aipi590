@@ -47,7 +47,7 @@ The evaluation metrics used are Normalized Discounted Cumulative Gain (NDCG), Me
 **1. Results for Retail Rocket Dataset**
 |Metric@k|NDCG@10|MRR@10|MAP@10|
 |--|--|--|--|
-|Value|0.0007|0.0015|0.0015|
+|Value|0.0950|0.0015|0.0015|
 
 **2. Results for H&M Dataset**
 |Metric@k|NDCG@10|MRR@10|MAP@10|

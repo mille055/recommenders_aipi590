@@ -1,31 +1,66 @@
 # Recommender Systems
-> #### _Archit, Shen, Shrey | Fall '22 | AIPI 590 Take Home Challange_
+> #### _Archit, Shen, Shrey | Fall '22 | AIPI 590 Take Home Challenge_
 &nbsp;
 
 ## About the Project
-lorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
+
+**Task:** 
+
+Train different session (contextual, sequential) based product recommendation
+recommenders for E-commerce use case and compare the performance of the recommenders.
+
+**Requirements:**
+
+In the deliverables and experiments, one of the recommenders needs to be a Deep RL
+recommender [DRL2, DRL1, or DRL3] and at least two different datasets are used for
+training/testing. Also, at least two offline evaluation metrics are used for benchmarking.
+
+**Our Approach:**
+
+Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum
 
 &nbsp;
 ## Datasets overview
-lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
+We have used two E-commerce datasets for our project. Following are the details of the datasets used
 
 **1. Dataset #1 - Retail Rocket Dataset**
-lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
 
-**2. Dataset #1 - H&M Dataste**
-lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
+The first dataset used was from [Retail Rocket](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset). Retail Rocket is a company that generates personalized product recommendations for shopping websites and provides customer segmentation based on user interests and other parameters. The dataset was collected from a real-world e-commerce website and consists of raw data, i.e. data without any content transformation. However, all values are hashed to address confidentiality concerns. Among the files in the dataset, only the behavior data (_events.csv_) is used in this project. The behavior data is a timestamped log of events like clicks, add to carts, and transactions that represent different interactions made by visitors on the e-commerce website over a time period of 4.5 months. There are a total of 2756101 events produced by 1407580 unique visitors. 
+
+**2. Dataset #2 - H&M Dataset**
+
+The second dataset used was from [H&M Group](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data?select=transactions_train.csv). H&M Group is a family of brands and businesses with 53 online markets and approximately 4,850 stores. Thier online store offers shoppers an extensive selection of products to browse through. The available meta data spans from simple data, such as garment type and customer age, to text data from product descriptions, to image data from garment images. Among the files in the datset, only the transactions data (_transactions_train.csv_) has been used in our project. This file consists of the purchases each customer for each date, as well as additional information like price and sales chanel. Duplicate rows correspond to multiple purchases of the same item.
 
 &nbsp;
 ## Steps to run the code
 
-The Jupyter notebook at  `Dataset_1_Retail_Rocket/RR_SA2C_Recommender.ipynb` contains all the code and corresponding descriptions to reproduce the results. For your convenience, the steps are recapped below:
+We have created driver jupyter notebooks for each model type (DRL and Non DRL) and both the datasets (Retail Rocket and H&M). These notebooks can be uploaded to the Google Colab and they contain all the code and corresponsing descriptions to reproduce the results.
 
-1. Launch `RR_SA2C_Recommender.ipynb` in a Google Colab instance.
-2. Run the first cell to clone the git repository containing all source code.
-3. Run the second cell to install required Python library.
-4. Run the third cell to download the Retail Rocket dataset to the Colab instance.
-5. Run the fourth cell to pre-process data and generate replay buffer for Deep Reinforcement Learning.
-6. Run the final cell to begin model training and evaluation.
+All the required datasets have been uploaded to an AWS S3 bucket. The driver notebooks autmatically clone our github repository and download the required datasets from the S3 bucket before executing modelling and evaluation scripts.
+
+&nbsp;
+
+**1. Run Deep Reinforcement Learning Models**
+
+Jupyter notebook at  `DRL_Recommenders/Dataset_1_Retail_Rocket/RR_SA2C_Recommender.ipynb` contains all the code and corresponding descriptions to reproduce the results for Retail Rocket Dataset. Similary `DRL_Recommenders/Dataset_2_HM/HM_SNQN_Recommender.ipynb` contains all the code and corresponding descriptions to reproduce the results for H&M Dataset. For your convenience, the steps are recapped below:
+1. Launch `Driver Notebook` in a Google Colab instance
+2. Run the first cell to clone the git repository containing all source code
+3. Run the second cell to install required Python library
+4. Run the third cell to download the required dataset to the Colab instance
+5. Run the fourth cell to pre-process data and generate replay buffer for Deep Reinforcement Learning
+6. Run the final cell to begin model training and evaluation
+
+&nbsp;
+
+**1. Run Non Deep Reinforcement Learning Models**
+
+Jupyter notebook at  `Non_DRL_Recommenders/Dataset_1_Retail_Rocket/BPR_Retail_Rocket.ipynb` contains all the code and corresponding descriptions to reproduce the results for Retail Rocket Dataset. Similary `DRL_Recommenders/Dataset_2_HM/BPR_HM.ipynb` contains all the code and corresponding descriptions to reproduce the results for H&M Dataset. For your convenience, the steps are recapped below:
+1. Launch `Driver Notebook` in a Google Colab instance
+2. Run the first cell to clone the git repository containing all source code
+3. Run the second cell to install required Python library
+4. Run the third cell to download the required dataset to the Colab instance
+5. Run the fourth and following cells to pre-process data and generate training dataset
+6. Run the last cell to train and evaluate the model and produce evaluation metrics
 
 &nbsp;
 ## Evaluation Metrics & Results
