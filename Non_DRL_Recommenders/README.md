@@ -52,7 +52,7 @@ The evaluation metrics used are Normalized Discounted Cumulative Gain (NDCG), Me
 **2. Results for H&M Dataset**
 |Metric@k|NDCG@10|MRR@10|MAP@10|
 |--|--|--|--|
-|Value|0.0014 |0.0026|0.0026|
+|Value|0.1018|0.0026|0.0026|
 
 &nbsp;
 # References
