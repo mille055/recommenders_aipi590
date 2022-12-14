@@ -45,7 +45,7 @@ def run_bpr_model(data, k, epochs, learning_rate, train_size=0.8):
     
     ## Initilize metric objects
     map_metric = cornac.metrics.MAP()       # Function to estimate MAP
-    ndcg_metric = cornac.metrics.NDCG(k=k)  # Function to estimate NDCG @top K
+    ndcg_metric = cornac.metrics.NDCG()  # Function to estimate NDCG @top K
     mrr_metric = cornac.metrics.MRR()       # Function to estimate MRR
 
     ## Model training and evaluation
