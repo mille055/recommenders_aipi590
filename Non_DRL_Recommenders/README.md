@@ -3,19 +3,19 @@
 &nbsp;
 
 ## Bayesian Personalised Ranking (BPR)
-Historically product recommender systems for e-commerece data were built using explicit ratings given by users to the products, based on thier opinions. Presenlty there are even more advance ways to build product recommenders which instead of explicit feedback make use of implicit feedback.
+Historically product recommender systems for e-commerce data were built using explicit ratings given by users to the products based on their opinions. However, presently there are even more advanced ways to build product recommenders that use implicit feedback instead of explicit feedback.
 
-Implicit data is the feedback collected from customers in the form of clicks, purchases, number of views, add to cart activity etc. Implicit feeback is more beneficial than explicit feedback as it avoides any negative reviews of customers. It is noisy but the huge volume compensates for that fact. It also shows more confidence of customers likes and dislikes as compared with explicit feedback, which in turn could be biased
+Implicit data is the feedback collected from customers through clicks, purchases, the number of views, add-to-cart activity, etc. Implicit feedback is more beneficial than explicit feedback as it avoids negative hate reviews from customers. It is noisy, but the vast volume compensates for that fact. It also shows more confidence in summarizing customers' likes and dislikes than in explicit feedback, which could be biased.
 
-Bayesian Personalized Ranking optimization criterion considers user-item pairs to come up with more personalized rankings for each user. The primary task of personalized ranking is to provide a user with a ranked list of items. Optimization is performed based on the rank of these user-item pairs instead of scoring just on the user-item interaction. The available observations are only positive feedback where the non-observed ones are a mixture of real negative feedback and missing values
+Bayesian Personalized Ranking optimization criterion considers user-item pairs to create more personalized rankings for each user. The primary task of personalized ranking is to provide a user with a ranked list of items. Optimization is performed based on the rank of these user-item pairs instead of scoring just on the user-item interaction. The available observations are only positive feedback, where the non-observed ones are a mixture of real negative feedback and missing values
 
 &nbsp;
 ## Data preparation and transformation
-In the real-world datasets users may have different types of interactions with items like clicks, visits, buy, add to cart etc. In addition, same types of interactions may also appear more than once in the history. To prepare dataset for the BPR model we did the follwoing:
+In real-world datasets, users may interact with items like clicks, visits, buy, add to cart, etc. In addition, the same types of interactions may appear more than once in history. Therefore, to prepare the dataset for the BPR model, we did the following:
 
-In the "explicit feedback" scenario, interactions between users and items are numerical / ordinal ratings or binary preferences such as like or dislike. But for implicit feedback cases all we have is the interaction between users in terms of clicks, visits, buy history and there is no ratings.
+In the "explicit feedback" scenario, interactions between users and items are numerical/ordinal ratings or binary preferences such as likes or dislikes. But for implicit feedback cases, all we have is the interaction between users in terms of clicks, visits, and buy history, and there are no explicit ratings.
 
-Many collaborative filtering algorithms are built on a user-item sparse matrix. We can build this matrix by aggregating our user and item interactions in many differnet ways:
+Many collaborative filtering algorithms are built on a user-item sparse matrix. We can make this matrix by aggregating our user and item interactions in many different ways:
 - Count: The most simple technique is to count times of interactions between user and item for producing affinity scores
 - Weighted Count: Different interactions have different weights in the count aggregation with more important interaction like buy having higher weights as compared to interations like click or add
 - Negative sampling: This is based on assumptions that user-item interactions can be interpreted as preferences by taking the factors like "number of interation times", "weights", "time decay", etc. The original dataset with implicit interaction records can be binarized into one that has only 1 or 0, indicating if a user has interacted with an item, respectively.
