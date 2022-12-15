@@ -45,13 +45,14 @@ def run_bpr_model(data, k, epochs, learning_rate, train_size=0.8):
     
     ## Initilize metric objects
     map_metric = cornac.metrics.MAP()       # Function to estimate MAP
-    ndcg_metric = cornac.metrics.NDCG()  # Function to estimate NDCG @top K
+    ndcg_metric = cornac.metrics.NDCG(k=10)  # Function to estimate NDCG @top K
     mrr_metric = cornac.metrics.MRR()       # Function to estimate MRR
+    hr_metric = cornac.metrics.Hits(k=10) # Function to estimate Hit Ratio@top K
 
     ## Model training and evaluation
     test_result, val_result = eval_method.evaluate(
                                                         model=bpr, 
-                                                        metrics=[map_metric, ndcg_metric, mrr_metric], 
+                                                        metrics=[map_metric, ndcg_metric, mrr_metric, hr_metric], 
                                                         user_based=True
                                                 )
 
