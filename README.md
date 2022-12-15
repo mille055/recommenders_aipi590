@@ -91,42 +91,40 @@ The evaluation metrics used are Normalized Discounted Cumulative Gain (NDCG), Me
 # Folder structure
 
 ```
-📦recommenders_aipi590
-┣ 📂DRL_Recommenders
- ┃ ┣ 📂Dataset_1_Retail_Rocket
- ┃ ┃ ┣ 📂RR_data
- ┃ ┃ ┃ ┗ 📜README.md
- ┃ ┃ ┣ 📂src
- ┃ ┃ ┃ ┣ 📜NextItNetModules_v2.py
- ┃ ┃ ┃ ┣ 📜SA2C_v2.py
- ┃ ┃ ┃ ┣ 📜SASRecModules_v2.py
- ┃ ┃ ┃ ┣ 📜gen_replay_buffer.py
- ┃ ┃ ┃ ┗ 📜utility_v2.py
- ┃ ┃ ┣ 📜RR_SA2C_Recommender.ipynb
- ┃ ┃ ┗ 📜requirements.txt
- ┃ ┣ 📂Dataset_2_HM
- ┃ ┃ ┣ 📂HM_data
- ┃ ┃ ┃ ┗ 📜README.md
- ┃ ┃ ┣ 📂src
- ┃ ┃ ┃ ┣ 📜NextItNetModules_v2.py
- ┃ ┃ ┃ ┣ 📜SASRecModules_v2.py
- ┃ ┃ ┃ ┣ 📜SNQN_v2.py
- ┃ ┃ ┃ ┣ 📜gen_replay_buffer.py
- ┃ ┃ ┃ ┗ 📜utility_v2.py
- ┃ ┃ ┣ 📜HM_SNQN_Recommender.ipynb
- ┃ ┃ ┣ 📜HM_SNQN_SASRec.ipynb
- ┃ ┃ ┗ 📜requirements.txt
- ┃ ┗ 📜README.md
- ┣ 📂Non_DRL_Recommenders
- ┃ ┣ 📂Dataset_1_Retail_Rocket
- ┃ ┃ ┗ 📜BPR_Retail_Rocket.ipynb
- ┃ ┣ 📂Dataset_2_HM
- ┃ ┃ ┗ 📜BPR_HM.ipynb
- ┃ ┣ 📜README.md
- ┃ ┣ 📜bpr_model.py
- ┃ ┗ 📜requirements.txt
- ┣ 📜.gitignore
- ┗ 📜README.md
+recommenders_aipi590
+├─ DRL_Recommenders
+│  ├─ Dataset_1_Retail_Rocket
+│  │  ├─ RR_SA2C_Recommender.ipynb
+│  │  ├─ RR_data
+│  │  │  └─ README.md
+│  │  ├─ requirements.txt
+│  │  └─ src
+│  │     ├─ NextItNetModules_v2.py
+│  │     ├─ SA2C_v2.py
+│  │     ├─ SASRecModules_v2.py
+│  │     ├─ gen_replay_buffer.py
+│  │     └─ utility_v2.py
+│  ├─ Dataset_2_HM
+│  │  ├─ HM_SNQN_Recommender.ipynb
+│  │  ├─ HM_data
+│  │  │  └─ README.md
+│  │  ├─ requirements.txt
+│  │  └─ src
+│  │     ├─ NextItNetModules_v2.py
+│  │     ├─ SASRecModules_v2.py
+│  │     ├─ SNQN_v2.py
+│  │     ├─ gen_replay_buffer.py
+│  │     └─ utility_v2.py
+│  └─ README.md
+├─ Non_DRL_Recommenders
+│  ├─ Dataset_1_Retail_Rocket
+│  │  └─ BPR_Retail_Rocket.ipynb
+│  ├─ Dataset_2_HM
+│  │  └─ BPR_HM.ipynb
+│  ├─ README.md
+│  ├─ bpr_model.py
+│  └─ requirements.txt
+└─ README.md
 ```
 
 &nbsp;
