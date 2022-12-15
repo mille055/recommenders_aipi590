@@ -92,7 +92,7 @@ To maintain comparability with Dataset #2, only **Purchase** recommendation resu
 
 |Metric@k|HR@5|NG@5|HR@10|NG@10|HR@15|NG@15|HR@20|NG@20|
 |--|--|--|--|--|--|--|--|--|
-|Value|0.5842|0.5047|0.6250|0.5180|0.6435|0.5229|0.6578|0.5263|
+|Value|0.0241|0.0155|0.0377|0.0198|0.0455|0.0219|0.0514|0.0233|
 
 &nbsp;
 ## Steps to run the code

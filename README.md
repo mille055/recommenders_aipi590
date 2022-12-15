@@ -86,7 +86,7 @@ The evaluation metrics used are Normalized Discounted Cumulative Gain (NDCG), Me
 **2. Results for H&M Dataset**
 |DRL Model Results|Non DRL Model Results|
 |--|--|
-|<table> <tr><th>NDCG@10</th><th>HR@10</th></tr><tr><td>up</td><td>up</td></tr> </table>|<table> <tr><th>NDCG@10</th><th>MRR@10</th><th>MAP@10</th></tr><tr><td>0.1018</td><td>0.0026</td><td>0.0026<td></tr> </table>|
+|<table> <tr><th>NDCG@10</th><th>HR@10</th></tr><tr><td>0.0198</td><td>0.0377</td></tr> </table>|<table> <tr><th>NDCG@10</th><th>MRR@10</th><th>MAP@10</th></tr><tr><td>0.1018</td><td>0.0026</td><td>0.0026<td></tr> </table>|
 
 &nbsp;
 # Folder structure
