@@ -17,7 +17,11 @@ training/testing. Also, at least two offline evaluation metrics are used for ben
 
 **Our Approach:**
 
-Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum
+Among all the available dataset options, we have selected two e-commerce datasets for our project, Retail Rocket and H&M Dataset. We assessed both Deep RL and Non Deep RL models on each dataset to compare performance using various recommender evaluation metrics.
+
+We studied the implementation of Deep Reinforcement Learning recommenders (DRL) in the `DRL2 Models` research paper. We ran experiments using models like SA2C and SNQN on our datasets to produce top@K products for every user. The detailed data preparation, model building, and evaluation methodology is present in [DRL_Recommenders/README.md](DRL_Recommenders/README.md)
+
+For the second part of creating Non Deep Reinforcement Learning (Non-DRL) models, we experimented with Microsoft's `recommenders` module and the `cornac` module by PreferredAI. After exploring different explicit and implicit feedback based Non-DRL recommenders, we implemented  Bayesian Personalised Ranking (BPR) for each dataset. The detailed data preparation, model building, and evaluation methodology is present in [Non_DRL_Recommenders/README.md](Non_DRL_Recommenders/README.md)
 
 &nbsp;
 ## Datasets overview
@@ -25,18 +29,19 @@ We have used two E-commerce datasets for our project. Following are the details 
 
 **1. Dataset #1 - Retail Rocket Dataset**
 
-The first dataset used was from [Retail Rocket](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset). Retail Rocket is a company that generates personalized product recommendations for shopping websites and provides customer segmentation based on user interests and other parameters. The dataset was collected from a real-world e-commerce website and consists of raw data, i.e. data without any content transformation. However, all values are hashed to address confidentiality concerns. Among the files in the dataset, only the behavior data (_events.csv_) is used in this project. The behavior data is a timestamped log of events like clicks, add to carts, and transactions that represent different interactions made by visitors on the e-commerce website over a time period of 4.5 months. There are a total of 2756101 events produced by 1407580 unique visitors. 
+The first dataset used was from [Retail Rocket](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset). Retail Rocket is a company that generates personalized product recommendations for shopping websites and provides customer segmentation based on user interests and other parameters. The dataset was collected from a real-world e-commerce website and consisted of raw data, i.e., data without any content transformation. However, all values are hashed to address confidentiality concerns. Among the files in the dataset, only the behavior data (_events.csv_) is used in this project. The behavior data is a timestamped log of events like clicks, add to carts, and transactions that represent different interactions made by visitors on the e-commerce website over a time period of 4.5 months. There are a total of 2756101 events produced by 1407580 unique visitors. 
+
 
 **2. Dataset #2 - H&M Dataset**
 
-The second dataset used was from [H&M Group](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data?select=transactions_train.csv). H&M Group is a family of brands and businesses with 53 online markets and approximately 4,850 stores. Thier online store offers shoppers an extensive selection of products to browse through. The available meta data spans from simple data, such as garment type and customer age, to text data from product descriptions, to image data from garment images. Among the files in the datset, only the transactions data (_transactions_train.csv_) has been used in our project. This file consists of the purchases each customer for each date, as well as additional information like price and sales chanel. Duplicate rows correspond to multiple purchases of the same item.
+The second dataset was from [H&M Group](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data?select=transactions_train.csv). H&M Group is a family of brands and businesses with 53 online markets and approximately 4,850 stores. Their online store offers shoppers an extensive selection of products to browse through. The available metadata spans from simple data, such as garment type and customer age, to text data from product descriptions, to image data from garment images. Among the files in the dataset, only the transaction data (_transactions_train.csv_) has been used in our project. This file consists of the customer purchases for each date and additional information like price and sales channel. Duplicate rows correspond to multiple purchases of the same item.
 
 &nbsp;
 ## Steps to run the code
 
-We have created driver jupyter notebooks for each model type (DRL and Non DRL) and both the datasets (Retail Rocket and H&M). These notebooks can be uploaded to the Google Colab and they contain all the code and corresponsing descriptions to reproduce the results.
+We have created Driver Jupiter Notebooks for each model type (DRL and Non-DRL), and both datasets (Retail Rocket and H&M). These notebooks can be uploaded to the Google Colab. They contain all the code and corresponding descriptions to reproduce the results.
 
-All the required datasets have been uploaded to an AWS S3 bucket. The driver notebooks autmatically clone our github repository and download the required datasets from the S3 bucket before executing modelling and evaluation scripts.
+All the required datasets have been uploaded to an AWS S3 bucket. The driver notebooks automatically clone our GitHub repository and download the required datasets from the S3 bucket before executing modeling and evaluation scripts.
 
 &nbsp;
 
@@ -52,7 +57,7 @@ Jupyter notebook at  `DRL_Recommenders/Dataset_1_Retail_Rocket/RR_SA2C_Recommend
 
 &nbsp;
 
-**1. Run Non Deep Reinforcement Learning Models**
+**2. Run Non Deep Reinforcement Learning Models**
 
 Jupyter notebook at  `Non_DRL_Recommenders/Dataset_1_Retail_Rocket/BPR_Retail_Rocket.ipynb` contains all the code and corresponding descriptions to reproduce the results for Retail Rocket Dataset. Similary `DRL_Recommenders/Dataset_2_HM/BPR_HM.ipynb` contains all the code and corresponding descriptions to reproduce the results for H&M Dataset. For your convenience, the steps are recapped below:
 1. Launch `Driver Notebook` in a Google Colab instance
@@ -124,3 +129,25 @@ The evaluation metrics used are Normalized Discounted Cumulative Gain (NDCG), Me
  ┣ 📜.gitignore
  ┗ 📜README.md
 ```
+
+&nbsp;
+# References
+
+1. Supervised Advantage Actor-Critic for Recommender Systems | X. Xin, A. Karatzoglou, I. Arapakis, and J. M. Jose,   _Proceedings of ACM Conference (Conference’17)_, 2021.
+
+2. Data Preparation for Colborative Filtering | Microsoft
+https://github.com/microsoft/recommenders/blob/main/examples/01_prepare_data/data_transform.ipynb
+
+3. Cornac Movie Recommendation using BPR | Microsoft
+https://github.com/microsoft/recommenders/blob/main/examples/02_model_collaborative_filtering/cornac_bpr_deep_dive.ipynb
+
+4. Bayesian Personalised Ranking (BPR) Evaluation Example | PreferredAI, Cornac
+https://github.com/PreferredAI/cornac/blob/master/examples/bpr_netflix.py
+https://cornac.preferred.ai/
+
+5. BPR: Bayesian personalized ranking from implicit feedback | Rendle, S., Freudenthaler, C., Gantner, Z., & Schmidt-Thieme, L. (2009, June).
+https://arxiv.org/ftp/arxiv/papers/1205/1205.2618.pdf
+
+6. Retailrocket, “Retailrocket Recommender System Dataset,”  _Kaggle_, 24-Mar-2017. [Online]. Available: https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset. [Accessed: 5-Dec-2022].
+
+7. H&M Group, “H&M personalized fashion recommendations,”  _Kaggle_, 09-May-2022. [Online]. Available: https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations. [Accessed: 5-Dec-2022].
