@@ -274,11 +274,13 @@ class QNetwork:
         #     print("load!")
         return all_embeddings
 
-def evaluate(sess):
+def evaluate(sess, datatype="val"):
     batch = eval_batch_size
     print(f'\nStart evaluation with batch size {batch}')
-
-    eval_sessions=pd.read_pickle(os.path.join(data_directory, 'sampled_val.df'))
+    if datatype == 'test':
+        eval_sessions=pd.read_pickle(os.path.join(data_directory, 'sampled_test.df'))
+    else:
+        eval_sessions=pd.read_pickle(os.path.join(data_directory, 'sampled_val.df'))
     eval_ids = eval_sessions.session_id.unique()
     groups = eval_sessions.groupby('session_id')
     batch = 100
@@ -450,4 +452,4 @@ if __name__ == '__main__':
                     print(f"Epoch {epoch+1} training completed.")
                     print(f'The loss after epoch {epoch+1} is: {loss}')
                 #if total_step % args.eval_freq == 0:
-        evaluate(sess)
+        evaluate(sess, datatype="test")
